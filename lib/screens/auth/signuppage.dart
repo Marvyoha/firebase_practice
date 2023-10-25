@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/providers/auth_provider.dart';
+import '../../core/providers/services_provider.dart';
 import '../widgets/custombutton.dart';
 import '../widgets/customtextfield.dart';
 import '../widgets/spacing.dart';
@@ -24,20 +24,21 @@ TextEditingController confirmPasswordController = TextEditingController();
 class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
-    final authprovider = Provider.of<AuthProvider>(context, listen: false);
+    final servicesProvider =
+        Provider.of<ServicesProvider>(context, listen: false);
 
     void signUpLogic() {
       if (passwordController.text == confirmPasswordController.text) {
         // Create User
-        authprovider.signUp(emailController.text, passwordController.text);
+        servicesProvider.signUp(emailController.text, passwordController.text);
         // Add user details in the database  (cloud firestore)
-        authprovider.storeUserDetails(
+        servicesProvider.storeUserDetails(
             int.parse(ageController.text),
             emailController.text,
             fullNameController.text,
             locationController.text);
 
-        authprovider.signOut();
+        servicesProvider.signOut();
 
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const LoginPage()));

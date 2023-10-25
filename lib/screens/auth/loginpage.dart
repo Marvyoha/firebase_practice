@@ -2,7 +2,7 @@ import 'package:fire_base_app/screens/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/providers/auth_provider.dart';
+import '../../core/providers/services_provider.dart';
 import '../widgets/custombutton.dart';
 import '../widgets/customtextfield.dart';
 import '../widgets/spacing.dart';
@@ -23,8 +23,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Get the authProvider from the context
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    // Get the ServicesProvider from the context
+    final servicesProvider =
+        Provider.of<ServicesProvider>(context, listen: false);
 
     // Build the login page
     return Scaffold(
@@ -76,11 +77,11 @@ class _LoginPageState extends State<LoginPage> {
                 const Space(),
                 CustomButton(
                   onTap: () {
-                    // Call signIn function from authProvider
-                    authProvider.signIn(
+                    // Call signIn function from ServicesProvider
+                    servicesProvider.signIn(
                         emailController.text, passwordController.text);
                     // To check if the user is valid
-                    authProvider.auth?.authStateChanges().listen((user) {
+                    servicesProvider.auth?.authStateChanges().listen((user) {
                       if (user != null) {
                         // Navigate to home
                         Navigator.pushReplacement(

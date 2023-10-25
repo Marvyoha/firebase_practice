@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 
-import 'core/providers/auth_provider.dart';
+import 'core/providers/services_provider.dart';
 import './firebase_options.dart';
 
 import 'screens/auth/authchecker.dart';
@@ -16,7 +16,8 @@ Future<void> main() async {
   );
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider<AuthProvider>(create: (context) => AuthProvider()),
+      ChangeNotifierProvider<ServicesProvider>(
+          create: (context) => ServicesProvider()),
     ],
     child: const MyApp(),
   ));
@@ -34,12 +35,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthProvider>(
-      builder: (context, authProvider, child) {
+    return Consumer<ServicesProvider>(
+      builder: (context, servicesProvider, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          home:
-              authProvider.user == null ? const LoginPage() : const HomePage(),
+          home: servicesProvider.user == null
+              ? const LoginPage()
+              : const HomePage(),
         );
       },
     );

@@ -1,4 +1,4 @@
-import 'package:fire_base_app/core/providers/auth_provider.dart';
+import 'package:fire_base_app/core/providers/services_provider.dart';
 import 'package:fire_base_app/screens/auth/loginpage.dart';
 import 'package:fire_base_app/screens/widgets/spacing.dart';
 import 'package:flutter/material.dart';
@@ -14,13 +14,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthProvider>(context);
+    final services = Provider.of<ServicesProvider>(context);
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
-            child: Text('Signed in as ${auth.user?.email}'),
+            child: Text('Signed in as ${services.user?.email}'),
           ),
           const Space(),
           MaterialButton(
@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(color: Colors.white),
             ),
             onPressed: () {
-              auth.signOut();
+              services.signOut();
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => const LoginPage()),

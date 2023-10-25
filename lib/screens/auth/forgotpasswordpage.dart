@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/providers/auth_provider.dart';
+import '../../core/providers/services_provider.dart';
 import '../widgets/Spacing.dart';
 import '../widgets/custombutton.dart';
 import '../widgets/customtextfield.dart';
@@ -18,7 +18,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   Widget build(BuildContext context) {
     TextEditingController emailController = TextEditingController();
 
-    AuthProvider authprovider = Provider.of<AuthProvider>(context);
+    ServicesProvider servicesProvider = Provider.of<ServicesProvider>(context);
 
     return Scaffold(
       backgroundColor: Colors.grey[300],
@@ -46,7 +46,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             title: 'Reset Password',
             onTap: () {
               setState(() {
-                authprovider.resetPassword(emailController.text, context);
+                servicesProvider.resetPassword(emailController.text, context);
               });
             },
           ),
