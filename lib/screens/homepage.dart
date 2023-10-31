@@ -16,19 +16,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final services = Provider.of<ServicesProvider>(context);
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-            child: Text('Signed in as ${services.user?.email}'),
-          ),
-          const Space(),
-          MaterialButton(
-            color: Colors.deepPurple[200],
-            child: const Text(
-              'Sign Out',
-              style: TextStyle(color: Colors.white),
-            ),
+      appBar: AppBar(
+        backgroundColor: Colors.deepPurple,
+        title: Text('Signed in as ${services.user?.email}'),
+        actions: [
+          IconButton(
+            splashRadius: 26,
+            icon: const Icon(Icons.logout),
             onPressed: () {
               services.signOut();
               Navigator.pushReplacement(
@@ -38,6 +32,35 @@ class _HomePageState extends State<HomePage> {
             },
           )
         ],
+      ),
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Space(),
+            Expanded(
+              child: FutureBuilder(
+                future: services.getDocId(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  return ListView.builder(
+                    itemCount: services.docIds.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListTile(
+                          tileColor: Colors.grey[400],
+                          contentPadding: const EdgeInsets.all(10),
+                          title:
+                              services.getUserDetails(services.docIds[index]),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

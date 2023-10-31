@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,11 +8,14 @@ import 'package:flutter/material.dart';
 class ServicesProvider extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final List<String> _docIDs = [];
+
   //Getters
   FirebaseFirestore? get firestore => _firestore;
   FirebaseAuth? get auth => _auth;
   User? get user => _auth.currentUser;
-
+  List<String> get docIds => _docIDs;
+// Firebase Authentication functions
   Future<void> signIn(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(
@@ -73,6 +78,7 @@ class ServicesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+// Firebase Cloud firestore functions
   Future<void> storeUserDetails(
       int age, String email, String fullname, String location) async {
     try {
@@ -82,6 +88,61 @@ class ServicesProvider extends ChangeNotifier {
         'full name': fullname.trim(),
         'location': location.trim(),
       });
+    } on FirebaseException catch (e) {
+      if (kDebugMode) {
+        print(e.message);
+      }
+    }
+  }
+
+  Future<void> getDocId() async {
+    try {
+      var collection = await firestore?.collection('Users').get();
+      if (collection != null) {
+        for (var element in collection.docs) {
+          _docIDs.add(element.reference.id);
+        }
+      }
+    } on FirebaseException catch (e) {
+      if (kDebugMode) {
+        print(e.message);
+      }
+    }
+  }
+
+  getUserDetails(String documentId) {
+    return FutureBuilder(
+      future: firestore?.collection('Users').doc(documentId).get(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          Map<String, dynamic> data =
+              snapshot.data?.data() as Map<String, dynamic>;
+
+          return Text(
+              'First Name : ${data['full name']}\n Nationality: ${data['location']}\n Age:${data['age']}');
+        } else {
+          return const Text('Loading.....');
+        }
+      },
+    );
+  }
+
+  Future<void> updateUserDetails({
+    required String? documentId,
+    int? age,
+    String? email,
+    String? fullname,
+    String? location,
+  }) async {
+    try {
+      if (documentId != null) {
+        await firestore?.collection('Users').doc(documentId).update({
+          'age': age,
+          'email': email?.trim(),
+          'full name': fullname?.trim(),
+          'location': location?.trim(),
+        });
+      }
     } on FirebaseException catch (e) {
       if (kDebugMode) {
         print(e.message);
